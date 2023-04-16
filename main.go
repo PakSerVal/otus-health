@@ -31,6 +31,19 @@ func main() {
 		w.Write(jsonResponse)
 	})
 
+	http.HandleFunc("/readiness", func(w http.ResponseWriter, r *http.Request) {
+		// Создаем ответ в формате JSON
+		response := healthStatus{"OK"}
+		jsonResponse, err := json.Marshal(response)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(jsonResponse)
+	})
+
 	log.Printf("Server started on port %s", port)
 	err := http.ListenAndServe(":"+port, nil)
 	if err != nil {
